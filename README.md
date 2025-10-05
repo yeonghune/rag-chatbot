@@ -52,3 +52,9 @@
 - **개발 환경**: Docker Compose 기반 로컬 환경 구성
 - **배포 자동화**: GitHub Actions를 이용한 CI/CD 구축
 - **NGINX**: HTTPS 리버스 프록시 및 정적 리소스 서빙
+
+---
+## 🧭 개요도
+
+### 🏗️ 전체 시스템 개요도
+![system_architecture.png](docs/system_architecture.png)
