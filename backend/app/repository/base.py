@@ -1,5 +1,6 @@
 import functools
 from typing import Generic, TypeVar, Type
+
 from sqlalchemy.orm import Session
 
 T = TypeVar("T")
@@ -23,7 +24,7 @@ class BaseRepository(Generic[T]):
     def get(self, id_: int) -> T | None:
         return self.db.get(self.model, id_)
 
-    def get_all(self) -> list[T] | None:
+    def get_all(self) -> list[T]:
         return self.db.query(self.model).all()
 
     def delete(self, obj: T) -> None:
@@ -47,19 +48,18 @@ def transactional(func):
                 break
 
         if repository is None:
-            raise AttributeError(f'Cannot find repository in service class :{self.__class__.__name__}')
+            raise AttributeError(f'Cannot find repository in service class: {self.__class__.__name__}')
 
         db = getattr(repository, 'db', None)
         if db is None or not isinstance(db, Session):
-            raise AttributeError('리포지토리 객체 내에 DB Session이 존재하지 않습니다')
+            raise AttributeError('Repository instance does not expose a valid Session')
 
         try:
             result = func(self, *args, **kwargs)
             db.commit()
             return result
-
-        except Exception as e:
+        except Exception as exc:
             db.rollback()
-            raise e
+            raise exc
 
     return wrapper

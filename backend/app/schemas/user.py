@@ -1,6 +1,5 @@
 from pydantic import BaseModel, Field, SecretStr, ConfigDict
 
-from backend.app.utils.enum import UserRole
 from backend.app.model.user import User
 from backend.app.core.security import get_password_hash
 from backend.app.utils.enum import UserRole
@@ -18,29 +17,31 @@ class UserCreate(BaseModel):
     def to_model(self) -> User:
         return User(
             name=self.name,
-            password=self.password.get_secret_value(),
+            password=get_password_hash(self.password.get_secret_value()),
             role=self.role
         )
 
 
 class UserUpdate(BaseModel):
-    name: str = Field(alias="name")
-    password: str = Field(alias="password")
-    role: UserRole = Field(alias="userRole")
+    name: str | None = Field(default=None, alias="name")
+    password: SecretStr | None = Field(default=None, alias="password")
+    role: UserRole | None = Field(default=None, alias="userRole")
 
     model_config = ConfigDict(
         use_enum_values=True
     )
 
     def update_model(self, model: User) -> User:
-        update_data = self.model_dump(by_alias=False, exclude_unset=True)
+        update_data = self.model_dump(by_alias=False, exclude_unset=True, exclude_none=True)
         for key, value in update_data.items():
-            value = get_password_hash(value.get_secret_value()) if key == 'password' else value
+            if key == 'password' and value is not None:
+                value = get_password_hash(value.get_secret_value())
             setattr(model, key, value)
         return model
 
 
 class UserOut(BaseModel):
+    id: int = Field(alias="userId")
     name: str = Field(alias="name")
     role: UserRole = Field(alias="userRole")
 
@@ -48,8 +49,13 @@ class UserOut(BaseModel):
         use_enum_values=True
     )
 
-    def from_model(self):
-        return User(
-            name=self.name,
-            role=self.role
+    @classmethod
+    def from_model(cls, model: User) -> "UserOut":
+        return cls.model_validate(
+            {
+                "userId": model.user_id,
+                "name": model.name,
+                "userRole": model.role,
+            },
+            from_attributes=True,
         )
