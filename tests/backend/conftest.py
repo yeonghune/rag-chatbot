@@ -22,10 +22,10 @@ def app(tmp_path_factory):
     os.environ["ADMIN_PASSWORD"] = "test-password"
     os.environ["PYTHONHASHSEED"] = "0"
 
-    # if "backend.app.config" in sys.modules:
-    #     reload(sys.modules["backend.app.config"])
-    # else:
-    #     import backend.app.config  # noqa: F401
+    if "backend.app.config" in sys.modules:
+        reload(sys.modules["backend.app.config"])
+    else:
+        import backend.app.config  # noqa: F401
 
     tmp_dir = tmp_path_factory.mktemp("db")
     db_path = Path(tmp_dir) / "test.db"
