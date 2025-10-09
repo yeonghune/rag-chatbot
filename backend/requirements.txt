@@ -1,0 +1,13 @@
+bcrypt==4.0.1
+fastapi==0.118.0
+fastapi-utils==0.8.0
+greenlet==3.2.4
+passlib[bcrypt]==1.7.4
+python-jose==3.3.0
+pydantic==2.11.10
+pydantic-settings==2.11.0
+python-multipart==0.0.20
+SQLAlchemy==2.0.43
+typing_extensions==4.15.0
+uvicorn==0.37.0
+typing_inspect==0.9.0
