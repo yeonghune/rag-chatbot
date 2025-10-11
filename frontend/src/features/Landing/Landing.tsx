@@ -1,58 +1,19 @@
 ﻿import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import CircularProgress from '@mui/material/CircularProgress';
-import Alert from '@mui/material/Alert';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import { getCurrentUser, signOut } from '../../api/auth/api';
+import { signOut } from '../../api/auth/api';
 import { tokenStore } from '../../api/tokenStore';
 
 const Landing = () => {
   const navigate = useNavigate();
-  const cachedUserName = React.useMemo(
+  const userName = React.useMemo(
     () => tokenStore.getTokens()?.user?.name ?? '',
     [],
   );
-  const [status, setStatus] = React.useState<'loading' | 'ready' | 'error'>(
-    cachedUserName ? 'ready' : 'loading',
-  );
-  const [userName, setUserName] = React.useState<string>(cachedUserName);
-  const [message, setMessage] = React.useState<string>('');
-
-  React.useEffect(() => {
-    let mounted = true;
-
-    const run = async () => {
-      setStatus('loading');
-      setMessage('');
-
-      try {
-        const user = await getCurrentUser();
-        if (!mounted) {
-          return;
-        }
-        setUserName(user.name);
-        setStatus('ready');
-      } catch (error) {
-        if (!mounted) {
-          return;
-        }
-        setStatus('error');
-        setMessage('세션이 만료되었어요. 다시 로그인해주세요.');
-        tokenStore.clearTokens();
-        navigate('/auth', { replace: true });
-      }
-    };
-
-    run();
-
-    return () => {
-      mounted = false;
-    };
-  }, [navigate]);
 
   const handleSignOut = async () => {
     try {
@@ -64,41 +25,6 @@ const Landing = () => {
       navigate('/auth', { replace: true });
     }
   };
-
-  if (status === 'loading') {
-    return (
-      <Box
-        sx={{
-          display: 'grid',
-          placeItems: 'center',
-          minHeight: '100vh',
-          background: 'linear-gradient(135deg, #f4f6fc, #dfe9f3)',
-        }}
-      >
-        <Stack spacing={2} alignItems="center">
-          <CircularProgress />
-          <Typography variant="body2" color="text.secondary">
-            인증 상태를 확인하고 있어요...
-          </Typography>
-        </Stack>
-      </Box>
-    );
-  }
-
-  if (status === 'error') {
-    return (
-      <Box
-        sx={{
-          display: 'grid',
-          placeItems: 'center',
-          minHeight: '100vh',
-          background: 'linear-gradient(135deg, #f4f6fc, #dfe9f3)',
-        }}
-      >
-        <Alert severity="error">{message}</Alert>
-      </Box>
-    );
-  }
 
   return (
     <Box

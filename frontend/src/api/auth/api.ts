@@ -14,14 +14,23 @@ export const signIn = async (payload: SignInRequest) => {
   form.append('password', payload.password);
 
   const { data } = await client.post<SignInResponse>('/auth/token', form, {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'X-Skip-Auth-Interceptor': 'true',
+    },
   });
   return data;
 };
 
 export const refreshToken = async () => {
   const client = getClient();
-  const { data } = await client.post<TokenResponse>('/auth/refresh');
+  const { data } = await client.post<TokenResponse>('/auth/refresh',
+    {
+      headers: {
+        'X-Skip-Auth-Interceptor': 'true'
+      }
+    }
+  );
   return data;
 };
 
