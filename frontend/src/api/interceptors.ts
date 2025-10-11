@@ -47,6 +47,13 @@ export const attachAuthInterceptors = (
       const originalRequest = error.config as (AxiosError['config'] &
         RetryableRequestConfig) | undefined;
 
+      if (
+        originalRequest &&
+        AxiosHeaders.from(originalRequest.headers ?? {}).has('X-Skip-Auth-Interceptor')
+      ) {
+        return Promise.reject(error);
+      }
+
       if (status !== 401 || !originalRequest || originalRequest._retry) {
         return Promise.reject(error);
       }
