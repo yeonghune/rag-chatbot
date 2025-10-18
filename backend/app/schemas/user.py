@@ -1,17 +1,15 @@
 from pydantic import BaseModel, Field, SecretStr, ConfigDict
 
-from fastapi import Form
-
 from backend.app.model.user import User
 from backend.app.core.security import get_password_hash
 from backend.app.utils.enum import UserRole
 
 
 class UserCreate(BaseModel):
-    name: str = Form(alias="name")
-    password: SecretStr = Form(alias="password")
-    nickname: str = Form(alis="nickname")
-    role: UserRole = Form(alias="userRole")
+    name: str = Field(alias="name")
+    password: SecretStr = Field(alias="password")
+    nickname: str = Field(alias="nickname")
+    role: UserRole = Field(alias="userRole")
 
     model_config = ConfigDict(
         use_enum_values=True
@@ -27,9 +25,9 @@ class UserCreate(BaseModel):
 
 
 class UserUpdate(BaseModel):
-    name: str | None = Form(default=None, alias="name")
-    password: SecretStr | None = Form(default=None, alias="password")
-    role: UserRole | None = Form(default=None, alias="userRole")
+    name: str | None = Field(default=None, alias="name")
+    password: SecretStr | None = Field(default=None, alias="password")
+    role: UserRole | None = Field(default=None, alias="userRole")
 
     model_config = ConfigDict(
         use_enum_values=True
