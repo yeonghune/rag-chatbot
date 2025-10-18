@@ -8,6 +8,7 @@ from backend.app.utils.enum import UserRole
 class UserCreate(BaseModel):
     name: str = Field(alias="name")
     password: SecretStr = Field(alias="password")
+    nickname: str = Field(alias="nickname")
     role: UserRole = Field(alias="userRole")
 
     model_config = ConfigDict(
@@ -18,7 +19,8 @@ class UserCreate(BaseModel):
         return User(
             name=self.name,
             password=get_password_hash(self.password.get_secret_value()),
-            role=self.role
+            role=self.role,
+            nickname=self.nickname
         )
 
 
@@ -44,6 +46,7 @@ class UserOut(BaseModel):
     id: int = Field(alias="userId")
     name: str = Field(alias="name")
     role: UserRole = Field(alias="userRole")
+    nickname: str = Field(alias="nickname")
 
     model_config = ConfigDict(
         use_enum_values=True
@@ -56,6 +59,7 @@ class UserOut(BaseModel):
                 "userId": model.user_id,
                 "name": model.name,
                 "userRole": model.role,
+                "nickname": model.nickname
             },
             from_attributes=True,
         )

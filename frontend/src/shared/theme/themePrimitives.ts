@@ -96,6 +96,19 @@ export const red = {
   900: 'hsl(0, 93%, 6%)',
 };
 
+export const black = {
+  50: 'hsl(225, 10%, 14%)',
+  100: 'hsl(228, 12%, 12%)',
+  200: 'hsl(228, 15%, 11%)',
+  300: 'hsl(225, 16%, 10%)',
+  400: 'hsl(225, 18%, 9%)',
+  500: 'hsl(225, 20%, 8%)',
+  600: 'hsl(225, 22%, 7%)',
+  700: 'hsl(225, 25%, 6%)',
+  800: 'hsl(225, 30%, 5%)',
+  900: 'hsl(225, 35%, 4%)',
+};
+
 export const getDesignTokens = (mode: PaletteMode) => {
   customShadows[1] =
     mode === 'dark'
@@ -286,6 +299,9 @@ export const colorSchemes = {
         hover: alpha(gray[200], 0.2),
         selected: `${alpha(gray[200], 0.3)}`,
       },
+      common: {
+        black: gray[800]
+      },
       baseShadow:
         'hsla(220, 30%, 5%, 0.07) 0px 4px 16px 0px, hsla(220, 25%, 10%, 0.07) 0px 8px 16px -5px',
     },
@@ -334,6 +350,9 @@ export const colorSchemes = {
       action: {
         hover: alpha(gray[600], 0.2),
         selected: alpha(gray[600], 0.3),
+      },
+      common: {
+        black: black[700],
       },
       baseShadow:
         'hsla(220, 30%, 5%, 0.7) 0px 4px 16px 0px, hsla(220, 25%, 10%, 0.8) 0px 8px 16px -5px',

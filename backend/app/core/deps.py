@@ -9,9 +9,11 @@ from backend.app.core.security import decode_access_token
 from backend.app.db.base import get_db
 from backend.app.model.user import User
 from backend.app.repository.auth import AuthRepository
+from backend.app.repository.chat import ChatRepository, MessageRepository
 from backend.app.repository.user import UserRepository
 from backend.app.schemas.auth import TokenPayload
 from backend.app.service.auth import AuthService
+from backend.app.service.chat import ChatService
 from backend.app.service.user import UserService
 from backend.app.utils.enum import UserRole
 
@@ -78,3 +80,18 @@ def get_current_active_admin(current_user: CurrentUser) -> User:
             detail="The user doesn't have enough privileges",
         )
     return current_user
+
+
+def get_chat_repository(db: SessionDep) -> ChatRepository:
+    return ChatRepository(db)
+
+
+def get_message_repository(db: SessionDep) -> MessageRepository:
+    return MessageRepository(db)
+
+
+def get_chat_service(
+    chat_repository: Annotated[ChatRepository, Depends(get_chat_repository)],
+    message_repository: Annotated[MessageRepository, Depends(get_message_repository)],
+) -> ChatService:
+    return ChatService(chat_repository, message_repository)

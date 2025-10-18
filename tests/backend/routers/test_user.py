@@ -1,5 +1,6 @@
 import os
 
+import os
 import http
 
 from .test_auth import _login
@@ -17,19 +18,21 @@ def test_create_user_requires_admin(client):
     admin_login = _admin_login(client)
     admin_token = admin_login.json()["access_token"]
 
-    payload = {"name": "alice", "password": "alice123", "userRole": "user"}
-    response = client.post("/api/users/", json=payload, headers=_auth_header(admin_token))
+    payload = {"name": "alice", "password": "alice123", "userRole": "user", "nickname": "Alice"}
+    response = client.post("/api/users/", data=payload, headers=_auth_header(admin_token))
+    print(response)
     assert response.status_code == http.HTTPStatus.OK
     data = response.json()
     assert data["name"] == "alice"
     assert data["userRole"] == "user"
+    assert data["nickname"] == "Alice"
 
     # Regular user cannot create another user
     user_login = _login(client, "alice", "alice123")
     user_token = user_login.json()["access_token"]
     response_forbidden = client.post(
         "/api/users/",
-        json={"name": "bob", "password": "bob123", "userRole": "user"},
+        data={"name": "bob", "password": "bob123", "userRole": "user", "nickname": "Bob"},
         headers=_auth_header(user_token),
     )
     assert response_forbidden.status_code == http.HTTPStatus.FORBIDDEN
@@ -57,14 +60,14 @@ def test_update_and_activation_flow(client):
 
     create_response = client.post(
         "/api/users/",
-        json={"name": "charlie", "password": "charlie123", "userRole": "user"},
+        data={"name": "charlie", "password": "charlie123", "userRole": "user", "nickname": "Charlie"},
         headers=_auth_header(admin_token),
     )
     user_id = create_response.json()["userId"]
 
     update_response = client.patch(
         f"/api/users/{user_id}",
-        json={"password": "newpass123", "userRole": "admin"},
+        data={"password": "newpass123", "userRole": "admin"},
         headers=_auth_header(admin_token),
     )
     assert update_response.status_code == http.HTTPStatus.OK

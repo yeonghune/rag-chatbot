@@ -5,10 +5,12 @@ from sqlalchemy.orm import Session
 
 from backend.app.model.refresh_token import RefreshToken
 from backend.app.model.user import User
+from backend.app.repository.base import BaseRepository
 
 
-class AuthRepository:
+class AuthRepository(BaseRepository):
     def __init__(self, db: Session):
+        super().__init__(User, db)
         self.db = db
 
     def get_by_username(self, username: str) -> Optional[User]:
