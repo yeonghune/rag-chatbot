@@ -7,7 +7,7 @@ import { attachAuthInterceptors } from './api/interceptors';
 import { tokenStore } from './api/tokenStore';
 import { mapTokenResponse, refreshToken } from './api/auth/api';
 
-const client = createClient();
+export const client = createClient();
 
 attachAuthInterceptors(client, {
   tokenStore,

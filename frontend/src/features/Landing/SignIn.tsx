@@ -11,9 +11,10 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import AppTheme from '@theme/AppTheme';
+import AppTheme from '@theme/Apptheme';
 import { mapTokenResponse, signIn } from '../../api/auth/api';
 import { tokenStore } from '../../api/tokenStore';
+import { useAppContext } from '@src/shared/contexts/AppContext';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -70,6 +71,8 @@ const SignIn = (props: SignInProps) => {
   const idInputRef = React.useRef<HTMLInputElement>(null);
   const passwordInputRef = React.useRef<HTMLInputElement>(null);
 
+  const { setName } = useAppContext();
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -102,6 +105,8 @@ const SignIn = (props: SignInProps) => {
       const response = await signIn({ username: id, password });
       const tokens = mapTokenResponse(response);
       tokenStore.setTokens(tokens);
+
+      setName(response.user.nickname);
 
       navigate('/', { replace: true });
     } catch (error) {

@@ -7,7 +7,7 @@ from backend.app.config import settings
 from backend.app.core.security import get_password_hash
 from backend.app.db.base import Base, SessionLocal, engine
 from backend.app.model.user import User
-from backend.app.router import auth, user
+from backend.app.router import auth, user, chat
 from backend.app.utils.enum import UserRole
 
 
@@ -23,6 +23,7 @@ async def lifespan(_: FastAPI):
                     name=settings.ADMIN_NAME,
                     password=get_password_hash(settings.ADMIN_PASSWORD),
                     role=UserRole.ADMIN.value,
+                    nickname='ADMIN',
                     is_active=True,
                 )
                 session.add(admin_user)
@@ -35,6 +36,7 @@ def create_app() -> FastAPI:
     application = FastAPI(title=settings.NAME, lifespan=lifespan)
     application.include_router(auth.router)
     application.include_router(user.router)
+    application.include_router(chat.router)
     return application
 
 

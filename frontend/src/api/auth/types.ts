@@ -7,6 +7,7 @@ export interface User {
   userId: number;
   name: string;
   userRole: string;
+  nickname: string;
 }
 
 export interface TokenResponse {
